@@ -3,19 +3,25 @@
 import streamlit as st
 import nmap
 scanner = nmap.PortScanner()
+import pandas as pd
 
-ip_addr = input()
-resp = input()
+ip_addy = input()
 
 if st.radio == 'TCP Connect Scan':
-    scanner.scan(ip_addr, '--top-ports 50', '-v -sT')
+    scanner.scan(ip_addy, '--top-ports 50', '-v -sT')
     print(scanner.scaninfo())
-    print('IP status: ', scanner[ip_addr].state())
-    print(scanner[ip_addr].all_protocols())
-    print("Open Ports: ", scanner[ip_addr]['tcp'].keys())
-elif resp == 'UDP Scan':
-    scanner.scan(ip_addr, '--top-ports 50', '-v -sU')
+    print('IP status: ', scanner[ip_addy].state())
+    print(scanner[ip_addy].all_protocols())
+    print("Open Ports: ", scanner[ip_addy]['tcp'].keys())
+
+
+    df = pd.DataFrame({'Open Port': [scanner[ip_addy]['tcp'].keys()],
+                       ''})
+elif st.radio == 'UDP Scan':
+    scanner.scan(ip_addy, '--top-ports 50', '-v -sU')
     print(scanner.scaninfo())
-    print('IP status: ', scanner[ip_addr].state())
-    print(scanner[ip_addr].all_protocols())
-    print("Open Ports: ", scanner[ip_addr]['udp'].keys())
+    print('IP status: ', scanner[ip_addy].state())
+    print(scanner[ip_addy].all_protocols())
+    print("Open Ports: ", scanner[ip_addy]['udp'].keys())
+
+
