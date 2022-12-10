@@ -12,7 +12,7 @@ st.caption('Slither uses a NMAP API and displays an interactive '
 ip_addy = st.text_input('IP Address', )
 protocol = st.radio("Chose an Option", ['TCP Connect Scan', 'UDP Scan'], horizontal=True)
 
-st.write('IP status: ', scan[ip_addy].state())
+st.write('IP status: ', scan[ip_addy,'--top-ports 50'].state())
 
 
 if protocol == 'TCP Connect Scan':
