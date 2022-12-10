@@ -1,8 +1,7 @@
 import streamlit as st
 import nmap
-scan = nmap.PortScanner()
 import pandas as pd
-
+scan = nmap.PortScanner()
 st.title('Slither')
 st.subheader('INF 601 -  Advanced Programming with Python Final Project')
 st.caption('Slither uses a NMAP API and displays an interactive '
@@ -17,20 +16,19 @@ st.write('IP status: ', scan[ip_addy].state())
 
 
 if protocol == 'TCP Connect Scan':
-
-    scan.scan(ip_addy, '--top-ports 50', '-v -sT')
-
+    scan.scan(ip_addy, '--top-ports 50', '-sT')
     tdf = pd.DataFrame({"Open Ports: ", scan[ip_addy]['tcp'].keys(),
-                        'State', [scan[ip_addy].state()]})
-    tdf.style.applymap(color_condition)
+                        'State', scan[ip_addy].state()})
+   # tdf.style.applymap(color_condition)
     st.table(tdf)
 
 
 elif protocol == 'UDP Scan':
+    scan.scan(ip_addy, '--top-ports 50', '-sU')
     udf = pd.DataFrame({'Port': [20, 28],
                         'Service': [11, 8],
                         'Version': [8, 2]}, )
-    udf.style.applymap(color_condition)
+   # udf.style.applymap(color_condition)
     st.table(udf)
 
 else:

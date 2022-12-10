@@ -1,8 +1,3 @@
-
-
-
-
-
 def color_condition(udf):
     if val ='up':
         color ='green'
