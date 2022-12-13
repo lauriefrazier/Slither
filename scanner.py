@@ -1,5 +1,4 @@
-#-sU for UDP, all udp ports and the service running on them, does not complete the 3 way handshake
-#-sT for TCP Scan top 50 ports which most used in TCP
+
 import streamlit as st
 import nmap
 scanner = nmap.PortScanner()
