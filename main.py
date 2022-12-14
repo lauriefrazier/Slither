@@ -5,9 +5,6 @@
 # -sT for TCP Scan top 50 ports which most used in TCP
 import streamlit as st
 import nmap
-import pandas as pd
-import numpy as np
-
 scan = nmap.PortScanner()
 st.title('Slither')
 st.subheader('INF 601 -  Advanced Programming with Python Final Project')
@@ -16,48 +13,62 @@ st.caption('Slither uses a NMAP API and displays an interactive '
            ' under a SYN ACK, UDP or a Comprehensive Scan.'
            ' Slither runs a scan through a IP address given by the user and runs it '
            'through the top 50 ports being used.')
+# Created columns within the frame to create better visuals
 col1, col2 = st.columns([2, 2])
 with col1:
     ip_addy = st.text_input('IP Address', )
 with col2:
     protocol = st.radio("Chose an Option", ['TCP Connect Scan', 'UDP Scan'], horizontal=True)
 
+# Committing button for scan with Run Scan
 if st.button('Run Scan'):
     if protocol == 'TCP Connect Scan':
         scan.scan(ip_addy, arguments='--top-ports 50 -sT')
-        # Dataframe for TCP, in columns, port and state, followed by the scan run of keys and state
-        try:
-            if scan[ip_addy]['tcp'].keys() and scan[ip_addy].state():
-                state = st.write('State: ', scan[ip_addy].state())
-                key = scan[ip_addy]['tcp'].keys()
-                tdf = pd.DataFrame({'Port', scan[ip_addy]['tcp'].keys(),
-                                    'State', scan[ip_addy].state(),
-                                    'Service', scan[ip_addy].service()})
-                # tdf.style.applymap(color_condition)
-                st.dataframe(tdf)
-            else:
-                st.write("Nothing found!")
-        except:
-            st.write("Nothing found!")
+        # If statement, if it passes with both keys and live state, run the loop
+        if scan[ip_addy]['tcp'].keys() and scan[ip_addy].state():
+            state = st.write('Host State: ', scan[ip_addy].state())
+            ports = list(scan[ip_addy]['tcp'].keys())
+            ports.sort()
+            st.write(f"Host: {ip_addy}")
+            st.write(f"Available Ports:")
+            col1, col2, col3 = st.columns([1, 1, 2])
+            # Created columns for data to be run.
+            with col1:
+                st.write(f"Port")
+            with col2:
+                st.write(f"State")
+            with col3:
+                st.write(f"Service")
+            for port in ports:
+                with col1:
+                    st.write(f"{port}")
+                with col2:
+                    st.write(f"{scan[ip_addy]['tcp'][port]['state']}")
+                with col3:
+                    st.write(f"{scan[ip_addy]['tcp'][port]['name']}")
 
     elif protocol == 'UDP Scan':
         scan.scan(ip_addy, arguments='--top-ports 50 -sU')
-        # Dataframe for TCP, in columns, port and state, followed by the scan run of keys and state
-        try:
-            if scan[ip_addy]['udp'].keys() and scan[ip_addy].state():
-                state = st.write('State: ', scan[ip_addy].state())
-                # st.write(scan[ip_addy]['udp'][1 - 1024]['state'])
-                # st.write(scan[ip_addy]['udp'].keys())
-                df = pd.DataFrame(
-                    np.random.randn(50, 20),
-                    columns=('col %d' % i for i in range(20)))
-                # tdf = pd.DataFrame({'Open Ports', scan[ip_addy]['udp'].keys(),
-                # 'Service', scan[ip_addy].service()})
-                # tdf.style.applymap(color_condition)
-                st.dataframe(df)
-            else:
-                st.write("Nothing found!")
-        except:
-            st.write("Nothing found!")
-
-# Run for TCP Scan
+        # Copy of loop for UDP Scan instead, same properties
+        if scan[ip_addy]['udp'].keys() and scan[ip_addy].state():
+            state = st.write('Host State: ', scan[ip_addy].state())
+            ports = list(scan[ip_addy]['udp'].keys())
+            ports.sort()
+            st.write(f"Host: {ip_addy}")
+            st.write(f"Available Ports:")
+            col1, col2, col3 = st.columns([1, 1, 2])
+            with col1:
+                st.write(f"Port")
+            with col2:
+                st.write(f"State")
+            with col3:
+                st.write(f"Service")
+            for port in ports:
+                with col1:
+                    st.write(f"{port}")
+                with col2:
+                    st.write(f"{scan[ip_addy]['udp'][port]['state']}")
+                with col3:
+                    st.write(f"{scan[ip_addy]['tudp'][port]['name']}")
+    else:
+        st.write('Nothing Found!')
